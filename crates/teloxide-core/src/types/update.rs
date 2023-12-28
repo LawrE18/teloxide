@@ -3,8 +3,8 @@ use serde::{de::MapAccess, Deserialize, Serialize, Serializer};
 use serde_json::Value;
 
 use crate::types::{
-    CallbackQuery, Chat, ChatJoinRequest, ChatMemberUpdated, ChosenInlineResult, InlineQuery,
-    Message, Poll, PollAnswer, PreCheckoutQuery, ShippingQuery, User,
+    CallbackQuery, Chat, ChatJoinRequest, ChatMemberUpdated, ChosenInlineResult, CustomQuery,
+    InlineQuery, Message, Poll, PollAnswer, PreCheckoutQuery, ShippingQuery, User,
 };
 
 /// This [object] represents an incoming update.
@@ -108,6 +108,10 @@ pub enum UpdateKind {
     /// updates.
     ChatJoinRequest(ChatJoinRequest),
 
+    /// All webhooks related to payments will be delivered in the
+    /// custom_query field of Update object.
+    CustomQuery(CustomQuery),
+
     /// An error that happened during deserialization.
     ///
     /// This allows `teloxide` to continue working even if telegram adds a new
@@ -141,7 +145,7 @@ impl Update {
             MyChatMember(m) | ChatMember(m) => &m.from,
             ChatJoinRequest(r) => &r.from,
 
-            Poll(_) | Error(_) => return None,
+            CustomQuery(_) | Poll(_) | Error(_) => return None,
         };
 
         Some(from)
@@ -204,7 +208,7 @@ impl Update {
                 i4(member.mentioned_users())
             }
             UpdateKind::ChatJoinRequest(request) => i5(request.mentioned_users()),
-            UpdateKind::Error(_) => i6(empty()),
+            UpdateKind::CustomQuery(_) | UpdateKind::Error(_) => i6(empty()),
         }
     }
 
@@ -226,6 +230,7 @@ impl Update {
             | PreCheckoutQuery(_)
             | Poll(_)
             | PollAnswer(_)
+            | CustomQuery(_)
             | Error(_) => return None,
         };
 
@@ -324,6 +329,9 @@ impl<'de> Deserialize<'de> for UpdateKind {
                             .next_value::<ChatJoinRequest>()
                             .ok()
                             .map(UpdateKind::ChatJoinRequest),
+                        "custom_query" => {
+                            map.next_value::<CustomQuery>().ok().map(UpdateKind::CustomQuery)
+                        }
                         _ => Some(empty_error()),
                     })
                     .unwrap_or_else(empty_error);
@@ -373,6 +381,7 @@ impl Serialize for UpdateKind {
             UpdateKind::ChatJoinRequest(v) => {
                 s.serialize_newtype_variant(name, 13, "chat_join_request", v)
             }
+            UpdateKind::CustomQuery(v) => s.serialize_newtype_variant(name, 14, "custom_query", v),
             UpdateKind::Error(v) => v.serialize(s),
         }
     }
