@@ -1,5 +1,3 @@
-#![allow(clippy::large_enum_variant)]
-
 use serde::{Deserialize, Serialize};
 
 use crate::types::CustomQueryId;
@@ -14,10 +12,12 @@ pub struct CustomQuery {
     #[serde(flatten)]
     pub id: CustomQueryId,
 
+    /// Custom query kind.
     #[serde(flatten)]
     pub kind: CustomQueryKind,
 }
 
+/// Custom query kind.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum CustomQueryKind {
