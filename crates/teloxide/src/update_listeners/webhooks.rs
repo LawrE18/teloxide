@@ -1,6 +1,8 @@
 //!
 use std::net::SocketAddr;
 
+use teloxide_core::types::AllowedUpdate;
+
 use crate::{requests::Requester, types::InputFile};
 
 /// Options related to setting up webhooks.
@@ -99,7 +101,7 @@ impl Options {
     }
 
     /// Allowed updates.
-    pub fn allowed_updates(self, v: Option<Vec<AllowedUpdate>>) -> Self {
+    pub fn allowed_updates(self, v: Vec<AllowedUpdate>) -> Self {
         Self { allowed_updates: Some(v), ..self }
     }
 
@@ -158,7 +160,7 @@ where
         ref url,
         ref mut certificate,
         max_connections,
-        allowed_updates,
+        ref allowed_updates,
         drop_pending_updates,
         ..
     } = options;
@@ -166,7 +168,7 @@ where
     let mut req = bot.set_webhook(url.clone());
     req.payload_mut().certificate = certificate.take();
     req.payload_mut().max_connections = max_connections;
-    req.payload_mut().allowed_updates = allowed_updates;
+    req.payload_mut().allowed_updates = allowed_updates.clone();
     req.payload_mut().drop_pending_updates = Some(drop_pending_updates);
     req.payload_mut().secret_token = Some(secret);
 
