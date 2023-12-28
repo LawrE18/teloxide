@@ -2,9 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::types::CustomQueryId;
 
-/// This object represents a message.
-///
-/// [The official docs](https://core.telegram.org/bots/api#message).
+/// This object represents a custom query.
 #[serde_with_macros::skip_serializing_none]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct CustomQuery {
@@ -17,14 +15,14 @@ pub struct CustomQuery {
     pub kind: CustomQueryKind,
 }
 
-/// Custom query kind.
+/// Supported custom query kinds.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum CustomQueryKind {
     PaymentsForm(PaymentsForm),
 }
 
-/// This object represents a payment.form handled webhook.
+/// This object represents a payments.form handled webhook.
 #[serde_with_macros::skip_serializing_none]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct PaymentsForm {
