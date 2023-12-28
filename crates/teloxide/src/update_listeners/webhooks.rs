@@ -39,6 +39,20 @@ pub struct Options {
     /// Default - None.
     pub max_connections: Option<u8>,
 
+    /// A JSON-serialized list of the update types you want your bot to receive.
+    /// For example, specify [“message”, “edited_channel_post”,
+    /// “callback_query”] to only receive updates of these types. See [`Update`]
+    /// for a complete list of available update types. Specify an empty list to
+    /// receive all updates regardless of type (default). If not specified, the
+    /// previous setting will be used.
+    ///
+    /// Please note that this parameter doesn't affect updates created before
+    /// the call to the setWebhook, so unwanted updates may be received for a
+    /// short period of time.
+    ///
+    /// [`Update`]: crate::types::Update
+    pub allowed_updates: Option<Vec<AllowedUpdate>>,
+
     /// Pass `true` to drop all pending updates.
     ///
     /// Default - false.
@@ -62,6 +76,7 @@ impl Options {
             url,
             certificate: None,
             max_connections: None,
+            allowed_updates: None,
             drop_pending_updates: false,
             secret_token: None,
         }
@@ -81,6 +96,11 @@ impl Options {
     /// throughput.
     pub fn max_connections(self, v: u8) -> Self {
         Self { max_connections: Some(v), ..self }
+    }
+
+    /// Allowed updates.
+    pub fn allowed_updates(self, v: Option<Vec<AllowedUpdate>>) -> Self {
+        Self { allowed_updates: Some(v), ..self }
     }
 
     /// Drop all pending updates before setting up webhook.
@@ -135,12 +155,18 @@ where
 
     let secret = options.get_or_gen_secret_token().to_owned();
     let &mut Options {
-        ref url, ref mut certificate, max_connections, drop_pending_updates, ..
+        ref url,
+        ref mut certificate,
+        max_connections,
+        allowed_updates,
+        drop_pending_updates,
+        ..
     } = options;
 
     let mut req = bot.set_webhook(url.clone());
     req.payload_mut().certificate = certificate.take();
     req.payload_mut().max_connections = max_connections;
+    req.payload_mut().allowed_updates = allowed_updates;
     req.payload_mut().drop_pending_updates = Some(drop_pending_updates);
     req.payload_mut().secret_token = Some(secret);
 
