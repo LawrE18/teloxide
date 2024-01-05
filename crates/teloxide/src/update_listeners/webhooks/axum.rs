@@ -170,6 +170,7 @@ pub fn axum_no_setup(
         secret_header: XTelegramBotApiSecretToken,
         input: String,
     ) -> impl IntoResponse {
+        println!("input: {input}");
         // FIXME: use constant time comparison here
         if secret_header.0.as_deref() != secret.as_deref().map(str::as_bytes) {
             return StatusCode::UNAUTHORIZED;
