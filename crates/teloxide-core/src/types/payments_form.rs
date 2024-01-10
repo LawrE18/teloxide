@@ -33,16 +33,30 @@ pub struct PaymentsForm {
 /// Theme params.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct ThemeParams {
+    /// Accent text color.
+    pub accent_text_color: String,
     /// Bg color.
     pub bg_color: String,
-    /// Text color.
-    pub text_color: String,
-    /// Hint color.
-    pub hint_color: String,
-    /// Link color.
-    pub link_color: String,
     /// Button color.
     pub button_color: String,
     /// Button text color.
     pub button_text_color: String,
+    /// Destructive text color.
+    pub destructive_text_color: String,
+    /// Header bg color.
+    pub header_bg_color: String,
+    /// Hint color.
+    pub hint_color: String,
+    /// Link color.
+    pub link_color: String,
+    /// Secondary bg color.
+    pub secondary_bg_color: String,
+    /// Section bg color.
+    pub section_bg_color: String,
+    /// Section header text color.
+    pub section_header_text_color: String,
+    /// Subtitle text color.
+    pub subtitle_text_color: String,
+    /// Text color.
+    pub text_color: String,
 }
