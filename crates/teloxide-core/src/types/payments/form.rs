@@ -9,7 +9,7 @@ use crate::types::OwnerInfo;
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct PaymentsForm {
     /// Customer id.
-    pub customer_id: i32,
+    pub customer_id: i64,
 
     /// Optional Customer's IETF language tag.
     pub customer_language_code: Option<String>,

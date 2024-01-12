@@ -1,6 +1,8 @@
 use serde::{Deserialize, Serialize};
 
-use crate::types::PaymentsForm;
+use crate::types::{CreateCharge, PaymentsForm};
+
+use super::DeleteSavedCredentials;
 
 /// This object represents a custom query.
 #[serde_with_macros::skip_serializing_none]
@@ -22,11 +24,22 @@ pub struct CustomQuery {
 pub enum CustomQueryMethod {
     #[serde(rename = "payments.form")]
     PaymentsForm,
+    #[serde(rename = "payments.create_charge")]
+    PaymentsCreateCharge,
+    #[serde(rename = "payments.create_charge_and_save")]
+    PaymentsCreateChargeAndSave,
+    #[serde(rename = "payments.create_charge_from_saved")]
+    PaymentsCreateChargeFromSaved,
+    #[serde(rename = "payments.delete_saved_credentials")]
+    DeleteSavedCredentials,
 }
 
 /// Supported custom query kinds.
+#[allow(clippy::large_enum_variant)]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum CustomQueryKind {
     PaymentsForm(PaymentsForm),
+    CreateCharge(CreateCharge),
+    DeleteSavedCredentials(DeleteSavedCredentials),
 }

@@ -5,7 +5,6 @@ pub use animation::*;
 pub use audio::*;
 pub use bot_command::*;
 pub use bot_command_scope::*;
-pub use bot_owner_info::*;
 pub use callback_game::*;
 pub use callback_query::*;
 pub use chat::*;
@@ -84,7 +83,6 @@ pub use parse_mode::*;
 pub use passport_data::*;
 pub use passport_element_error::*;
 pub use passport_file::*;
-pub use payments_form::*;
 pub use photo_size::*;
 pub use poll::*;
 pub use poll_answer::*;
@@ -127,7 +125,6 @@ mod animation;
 mod audio;
 mod bot_command;
 mod bot_command_scope;
-mod bot_owner_info;
 mod callback_game;
 mod callback_query;
 mod chat;
@@ -244,7 +241,6 @@ mod encrypted_passport_element;
 mod passport_data;
 mod passport_element_error;
 mod passport_file;
-mod payments_form;
 
 pub use non_telegram_types::{country_code::*, currency::*, until_date::*};
 mod non_telegram_types {
@@ -253,6 +249,9 @@ mod non_telegram_types {
     pub(crate) mod mime;
     pub(super) mod until_date;
 }
+
+pub use payments::*;
+mod payments;
 
 mod chat_id;
 mod recipient;
