@@ -17,4 +17,5 @@ pub enum AllowedUpdate {
     MyChatMember,
     ChatMember,
     ChatJoinRequest,
+    CustomQuery,
 }

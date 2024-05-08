@@ -155,4 +155,5 @@ define_update_ext! {
     (filter_my_chat_member, UpdateKind::MyChatMember, MyChatMember),
     (filter_chat_member, UpdateKind::ChatMember, ChatMember),
     (filter_chat_join_request, UpdateKind::ChatJoinRequest, ChatJoinRequest),
+    (filter_custom_query, UpdateKind::CustomQuery, CustomQuery),
 }
