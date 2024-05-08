@@ -1,6 +1,6 @@
 [assign]
 warn_non_default_branch = true
-# contributing_url = "https://rustc-dev-guide.rust-lang.org/contributing.html" # FIXME: configure
+contributing_url = "https://github.com/teloxide/teloxide/blob/master/CONTRIBUTING.md"
 
 [assign.adhoc_groups]
 # This is a special group that will be used if none of the `owners` entries matches.
@@ -28,6 +28,29 @@ trigger_files = ["crates/teloxide/"]
 [autolabel."C-macros"]
 trigger_files = ["crates/teloxide-macros/"]
 
+[autolabel."A-dialogue"]
+trigger_files = ["crates/teloxide/src/dispatching/dialogue/"]
+
+[autolabel."A-dispatching"]
+trigger_files = ["crates/teloxide/src/dispatching/"]
+
+[autolabel."A-macros"]
+trigger_files = ["crates/teloxide-macros/"]
+
+[autolabel."A-requester"]
+trigger_files = ["crates/teloxide-core/src/requests/requester.rs", "crates/teloxide-core/src/requests/requester_ext.rs"]
+
+[autolabel."A-requests"]
+trigger_files = ["crates/teloxide-core/src/requests/", "crates/teloxide-core/src/payloads/"]
+
+[autolabel."A-tba-errors"]
+trigger_files = ["crates/teloxide-core/src/errors.rs"]
+
+[autolabel."A-tba-types"]
+trigger_files = ["crates/teloxide-core/src/types"]
+
+[autolabel."A-update-listeners"]
+trigger_files = ["crates/teloxide/src/update_listeners"]
 
 [relabel]
 allow-unauthenticated = [
@@ -56,5 +79,11 @@ allow-unauthenticated = [
 reviewed_label = "S-waiting-on-author"
 # These labels are removed when a review is submitted.
 review_labels = ["S-waiting-on-review"]
+
+[review-requested]
+# Those labels are removed when PR author requests a review from an assignee
+remove_labels = ["S-waiting-on-author"]
+# Those labels are added when PR author requests a review from an assignee
+add_labels = ["S-waiting-on-review"]
 
 [shortcut]

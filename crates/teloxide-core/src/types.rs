@@ -17,6 +17,7 @@ pub use chat_member::*;
 pub use chat_member_updated::*;
 pub use chat_permissions::*;
 pub use chat_photo::*;
+pub use chat_shared::*;
 pub use chat_type::*;
 pub use chosen_inline_result::*;
 pub use contact::*;
@@ -68,6 +69,8 @@ pub use input_sticker::*;
 pub use invoice::*;
 pub use keyboard_button::*;
 pub use keyboard_button_poll_type::*;
+pub use keyboard_button_request_chat::*;
+pub use keyboard_button_request_user::*;
 pub use label_price::*;
 pub use location::*;
 pub use login_url::*;
@@ -107,6 +110,7 @@ pub use unit_true::*;
 pub use update::*;
 pub use user::*;
 pub use user_profile_photos::*;
+pub use user_shared::*;
 pub use venue::*;
 pub use video::*;
 pub use video_chat_ended::*;
@@ -137,6 +141,7 @@ mod chat_member;
 mod chat_member_updated;
 mod chat_permissions;
 mod chat_photo;
+mod chat_shared;
 mod chat_type;
 mod chosen_inline_result;
 mod contact;
@@ -164,6 +169,8 @@ mod input_sticker;
 mod invoice;
 mod keyboard_button;
 mod keyboard_button_poll_type;
+mod keyboard_button_request_chat;
+mod keyboard_button_request_user;
 mod label_price;
 mod location;
 mod login_url;
@@ -200,6 +207,7 @@ mod unit_true;
 mod update;
 mod user;
 mod user_profile_photos;
+mod user_shared;
 mod venue;
 mod video;
 mod video_chat_ended;
@@ -265,16 +273,12 @@ pub use user_id::*;
 
 use serde::Serialize;
 
-/// Converts an `i64` timestump to a `choro::DateTime`, producing serde error
-/// for invalid timestumps
+/// Converts an `i64` timestamp to a `choro::DateTime`, producing serde error
+/// for invalid timestamps
 pub(crate) fn serde_timestamp<E: serde::de::Error>(
     timestamp: i64,
 ) -> Result<chrono::DateTime<chrono::Utc>, E> {
-    use chrono::{DateTime, NaiveDateTime, Utc};
-
-    NaiveDateTime::from_timestamp_opt(timestamp, 0)
-        .ok_or_else(|| E::custom("invalid timestump"))
-        .map(|naive| DateTime::from_naive_utc_and_offset(naive, Utc))
+    chrono::DateTime::from_timestamp(timestamp, 0).ok_or_else(|| E::custom("invalid timestump"))
 }
 
 pub(crate) mod serde_opt_date_from_unix_timestamp {
@@ -310,10 +314,7 @@ pub(crate) mod serde_opt_date_from_unix_timestamp {
 
         {
             let json = r#"{"date":1}"#;
-            let expected = DateTime::from_naive_utc_and_offset(
-                chrono::NaiveDateTime::from_timestamp_opt(1, 0).unwrap(),
-                Utc,
-            );
+            let expected = DateTime::from_timestamp(1, 0).unwrap();
 
             let Struct { date } = serde_json::from_str(json).unwrap();
             assert_eq!(date, Some(expected));

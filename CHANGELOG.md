@@ -9,18 +9,61 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add `CustomQuery` update kind.
+- Documentation regarding the way captions work for the official clients on `SendMediaGroup` ([PR 992](https://github.com/teloxide/teloxide/pull/992))
 - Add `MessageToCopyNotFound` error to `teloxide::errors::ApiError` ([PR 917](https://github.com/teloxide/teloxide/pull/917)) 
 - `Dispatcher::try_dispatch_with_listener` ([PR 913](https://github.com/teloxide/teloxide/pull/913))
+- Missing Message::filter_* functions ([PR 982](https://github.com/teloxide/teloxide/pull/982)): 
+  - `filter_game`
+  - `filter_venue`
+  - `filter_video`
+  - `filter_video_note`
+  - `filter_voice`
+  - `filter_migration`
+  - `filter_migration_from`
+  - `filter_migration_to`
+  - `filter_new_chat_title`
+  - `filter_new_chat_photo`
+  - `filter_delete_chat_photo`
+  - `filter_group_chat_created`
+  - `filter_supergroup_chat_created`
+  - `filter_channel_chat_created`
+  - `filter_message_auto_delete_timer_changed`
+  - `filter_invoice`
+  - `filter_successful_payment`
+  - `filter_connected_website`
+  - `filter_write_access_allowed`
+  - `filter_passport_data`
+  - `filter_proximity_alert_triggered`
+  - `filter_forum_topic_created`
+  - `filter_forum_topic_edited`
+  - `filter_forum_topic_closed`
+  - `filter_forum_topic_reopened`
+  - `filter_general_forum_topic_hidden`
+  - `filter_general_forum_topic_unhidden`
+  - `filter_video_chat_scheduled`
+  - `filter_video_chat_started`
+  - `filter_video_chat_ended`
+  - `filter_video_chat_participants_invited`
+  - `filter_web_app_data` 
+- Implement `PostgresStorage`, a persistent dialogue storage based on [PostgreSQL](https://www.postgresql.org/)([PR 996](https://github.com/teloxide/teloxide/pull/996)).
+- Implement `GetChatId` for `teloxide_core::types::{Chat, ChatJoinRequest, ChatMemberUpdated}`.
 
 ### Fixed
 
 - Use `UserId` instead of `i64` for `user_id` in `html::user_mention` and `markdown::user_mention` ([PR 896](https://github.com/teloxide/teloxide/pull/896))
 - Greatly improved the speed of graceful shutdown (`^C`) ([PR 938](https://github.com/teloxide/teloxide/pull/938))
-- Fix typos in docstrings ([PR 953](https://github.com/teloxide/teloxide/pull/953))
+- Fix typos in documentation ([PR 953](https://github.com/teloxide/teloxide/pull/953))
+- Use `Seconds` instead of `String` in `InlineQueryResultAudio` for `audio_duration` ([PR 994](https://github.com/teloxide/teloxide/pull/994))
+- High CPU usage on network errors ([PR 1002](https://github.com/teloxide/teloxide/pull/1002), [Issue 780](https://github.com/teloxide/teloxide/issues/780))
+- Fix app build errors when using items gated behind sqlite-storage with the feature sqlite-storage-rustls ([PR 1018](https://github.com/teloxide/teloxide/pull/1018))
+- Fix typo in `ApiError::ToMuchMessages` variant (rename it to `TooMuchMessages`) ([PR 1046](https://github.com/teloxide/teloxide/pull/1046))
 
 ### Changed
 
 - MSRV (Minimal Supported Rust Version) was bumped from `1.64.0` to `1.68.0` ([PR 950][https://github.com/teloxide/teloxide/pull/950])
+- Sqlx version was bumped from `0.6` to `0.7.3`([PR 995](https://github.com/teloxide/teloxide/pull/995))
+- Feature `sqlite-storage` was renamed to `sqlite-storage-nativetls`([PR 995](https://github.com/teloxide/teloxide/pull/995))
+- MSRV (Minimal Supported Rust Version) was bumped from `1.68.0` to `1.70.0` ([PR 996][https://github.com/teloxide/teloxide/pull/996])
 
 ### Removed
 

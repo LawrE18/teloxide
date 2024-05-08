@@ -2,10 +2,7 @@
 // (for built ins there no warnings, but for (De)Serialize, there are)
 #![allow(deprecated)]
 
-use std::{
-    convert::{TryFrom, TryInto},
-    str::FromStr,
-};
+use std::str::FromStr;
 
 use serde::{Deserialize, Serialize};
 
@@ -145,8 +142,11 @@ pub enum ParseMode {
     MarkdownV2,
     #[serde(rename = "HTML")]
     Html,
-    #[deprecated = "This is a legacy mode, retained for backward compatibility. Use `MarkdownV2` \
-                    instead."]
+    #[deprecated(
+        since = "0.1.0",
+        note = "This is a legacy mode, retained for backward compatibility. Use `MarkdownV2` \
+                instead."
+    )]
     Markdown,
 }
 
@@ -181,8 +181,8 @@ impl FromStr for ParseMode {
 }
 
 #[cfg(test)]
+#[allow(deprecated)]
 mod tests {
-    #![allow(deprecated)]
 
     use super::*;
 

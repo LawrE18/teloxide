@@ -236,11 +236,6 @@ impl Update {
 
         Some(chat)
     }
-
-    #[deprecated(note = "renamed to `from`", since = "0.10.0")]
-    pub fn user(&self) -> Option<&User> {
-        self.from()
-    }
 }
 
 impl UpdateId {
@@ -398,16 +393,13 @@ mod test {
         MessageId, MessageKind, Update, UpdateId, UpdateKind, User, UserId,
     };
 
-    use chrono::{DateTime, NaiveDateTime, Utc};
+    use chrono::DateTime;
 
     // TODO: more tests for deserialization
     #[test]
     fn message() {
         let timestamp = 1_569_518_342;
-        let date = DateTime::from_naive_utc_and_offset(
-            NaiveDateTime::from_timestamp_opt(timestamp, 0).unwrap(),
-            Utc,
-        );
+        let date = DateTime::from_timestamp(timestamp, 0).unwrap();
 
         let json = r#"{
             "update_id":892252934,
