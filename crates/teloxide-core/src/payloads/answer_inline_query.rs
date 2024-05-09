@@ -2,7 +2,7 @@
 
 use serde::Serialize;
 
-use crate::types::{InlineQueryResult, True};
+use crate::types::{InlineQueryResult, InlineQueryResultsButton, True};
 
 impl_payload! {
     /// Use this method to send answers to an inline query. On success, _True_ is returned. No more than **50** results per query are allowed.
@@ -30,6 +30,8 @@ impl_payload! {
             /// [Deep-linking]: https://core.telegram.org/bots#deep-linking
             /// [switch_inline]: https://core.telegram.org/bots/api#inlinekeyboardmarkup
             pub switch_pm_parameter: String [into],
+            /// A JSON-serialized object describing a button to be shown above inline query results.
+            pub button: InlineQueryResultsButton,
         }
     }
 }

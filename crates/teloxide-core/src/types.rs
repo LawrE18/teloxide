@@ -62,6 +62,7 @@ pub use inline_query_result_photo::*;
 pub use inline_query_result_venue::*;
 pub use inline_query_result_video::*;
 pub use inline_query_result_voice::*;
+pub use inline_query_results_button::*;
 pub use input_file::*;
 pub use input_media::*;
 pub use input_message_content::*;
@@ -243,6 +244,7 @@ mod inline_query_result_photo;
 mod inline_query_result_venue;
 mod inline_query_result_video;
 mod inline_query_result_voice;
+mod inline_query_results_button;
 
 mod encrypted_credentials;
 mod encrypted_passport_element;
