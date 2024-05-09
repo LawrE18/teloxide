@@ -3031,6 +3031,11 @@ Schema(
                         },
                     ),
                 ),
+                Param(
+                    name: "button",
+                    ty: Option(RawTy("InlineQueryResultsButton")),
+                    descr: Doc(md: "A JSON-serialized object describing a button to be shown above inline query results.")
+                ),
             ],
         ),
         Method(
