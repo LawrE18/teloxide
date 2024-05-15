@@ -2,7 +2,7 @@
 
 use serde::Serialize;
 
-use crate::types::{MessageId, Recipient, True};
+use crate::types::{MessageIds, Recipient, True};
 
 impl_payload! {
     /// Use this method to delete multiple messages simultaneously. If some of the specified messages can't be found, they are skipped.
@@ -13,7 +13,7 @@ impl_payload! {
             /// Unique identifier for the target chat or username of the target channel (in the format `@channelusername`).
             pub chat_id: Recipient [into],
             /// A JSON-serialized list of 1-100 identifiers of messages to delete. See deleteMessage for limitations on which messages can be deleted
-            pub message_ids: Vec<MessageId> [collect],
+            pub message_ids: MessageIds,
         }
     }
 }

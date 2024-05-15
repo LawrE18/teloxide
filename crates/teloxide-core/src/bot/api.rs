@@ -6,7 +6,7 @@ use crate::{
     requests::{JsonRequest, MultipartRequest},
     types::{
         BotCommand, ChatId, ChatPermissions, InlineQueryResult, InputFile, InputMedia,
-        InputSticker, LabeledPrice, MessageId, Recipient, ThreadId, UserId,
+        InputSticker, LabeledPrice, MessageId, MessageIds, Recipient, ThreadId, UserId,
     },
     Bot,
 };
@@ -1037,10 +1037,9 @@ impl Requester for Bot {
 
     type DeleteMessages = JsonRequest<payloads::DeleteMessages>;
 
-    fn delete_messages<C, M>(&self, chat_id: C, message_ids: M) -> Self::DeleteMessages
+    fn delete_messages<C>(&self, chat_id: C, message_ids: MessageIds) -> Self::DeleteMessages
     where
         C: Into<Recipient>,
-        M: IntoIterator<Item = MessageId>,
     {
         Self::DeleteMessages::new(self.clone(), payloads::DeleteMessages::new(chat_id, message_ids))
     }

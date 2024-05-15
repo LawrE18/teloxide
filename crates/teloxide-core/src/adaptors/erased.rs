@@ -163,9 +163,6 @@ macro_rules! fwd_erased {
     (@convert $m:ident, $arg:ident, custom_emoji_ids : $T:ty) => {
         $arg.into_iter().collect()
     };
-    (@convert $m:ident, $arg:ident, message_ids : $T:ty) => {
-        $arg.into_iter().collect()
-    };
     (@convert $m:ident, $arg:ident, $arg_:ident : $T:ty) => {
         $arg.into()
     };
@@ -786,7 +783,7 @@ trait ErasableRequester<'a> {
     fn delete_messages(
         &self,
         chat_id: Recipient,
-        message_ids: Vec<MessageId>,
+        message_ids: MessageIds,
     ) -> ErasedRequest<'a, DeleteMessages, Self::Err>;
 
     fn send_sticker(
@@ -1592,7 +1589,7 @@ where
     fn delete_messages(
         &self,
         chat_id: Recipient,
-        message_ids: Vec<MessageId>,
+        message_ids: MessageIds,
     ) -> ErasedRequest<'a, DeleteMessages, Self::Err> {
         Requester::delete_messages(self, chat_id, message_ids).erase()
     }

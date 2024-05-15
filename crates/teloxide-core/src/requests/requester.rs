@@ -937,10 +937,9 @@ pub trait Requester {
     type DeleteMessages: Request<Payload = DeleteMessages, Err = Self::Err>;
 
     /// For Telegram documentation see [`DeleteMessages`].
-    fn delete_messages<C, M>(&self, chat_id: C, message_ids: M) -> Self::DeleteMessages
+    fn delete_messages<C>(&self, chat_id: C, message_ids: MessageIds) -> Self::DeleteMessages
     where
-        C: Into<Recipient>,
-        M: IntoIterator<Item = MessageId>;
+        C: Into<Recipient>;
 
     type SendSticker: Request<Payload = SendSticker, Err = Self::Err>;
 

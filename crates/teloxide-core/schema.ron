@@ -3423,7 +3423,7 @@ Schema(
                 ),
                 Param(
                     name: "message_ids",
-                    ty: ArrayOf(RawTy("MessageId")),
+                    ty: RawTy("MessageIds"),
                     descr: Doc(md: "A JSON-serialized list of 1-100 identifiers of messages to delete. See deleteMessage for limitations on which messages can be deleted")
                 ),  
             ],
