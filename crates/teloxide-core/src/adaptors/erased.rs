@@ -265,6 +265,7 @@ where
         edit_message_reply_markup_inline,
         stop_poll,
         delete_message,
+        delete_messages,
         send_sticker,
         get_sticker_set,
         get_custom_emoji_stickers,
@@ -778,6 +779,12 @@ trait ErasableRequester<'a> {
         chat_id: Recipient,
         message_id: MessageId,
     ) -> ErasedRequest<'a, DeleteMessage, Self::Err>;
+
+    fn delete_messages(
+        &self,
+        chat_id: Recipient,
+        message_ids: MessageIds,
+    ) -> ErasedRequest<'a, DeleteMessages, Self::Err>;
 
     fn send_sticker(
         &self,
@@ -1577,6 +1584,14 @@ where
         message_id: MessageId,
     ) -> ErasedRequest<'a, DeleteMessage, Self::Err> {
         Requester::delete_message(self, chat_id, message_id).erase()
+    }
+
+    fn delete_messages(
+        &self,
+        chat_id: Recipient,
+        message_ids: MessageIds,
+    ) -> ErasedRequest<'a, DeleteMessages, Self::Err> {
+        Requester::delete_messages(self, chat_id, message_ids).erase()
     }
 
     fn send_sticker(
