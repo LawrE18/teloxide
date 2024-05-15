@@ -934,6 +934,14 @@ pub trait Requester {
     where
         C: Into<Recipient>;
 
+    type DeleteMessages: Request<Payload = DeleteMessages, Err = Self::Err>;
+
+    /// For Telegram documentation see [`DeleteMessages`].
+    fn delete_messages<C, M>(&self, chat_id: C, message_ids: M) -> Self::DeleteMessages
+    where
+        C: Into<Recipient>,
+        M: IntoIterator<Item = MessageId>;
+
     type SendSticker: Request<Payload = SendSticker, Err = Self::Err>;
 
     /// For Telegram documentation see [`SendSticker`].
@@ -1234,6 +1242,7 @@ macro_rules! forward_all {
             edit_message_reply_markup_inline,
             stop_poll,
             delete_message,
+            delete_messages,
             send_sticker,
             get_sticker_set,
             get_custom_emoji_stickers,

@@ -1172,6 +1172,18 @@ macro_rules! requester_forward {
             $body!(delete_message this (chat_id: C, message_id: MessageId))
         }
     };
+    (@method delete_messages $body:ident $ty:ident) => {
+        type DeleteMessages = $ty![DeleteMessages];
+
+        fn delete_messages<C, M>(&self, chat_id: C, message_ids: M) -> Self::DeleteMessages
+        where
+            C: Into<Recipient>,
+            M: IntoIterator<Item = MessageId>
+        {
+            let this = self;
+            $body!(delete_messages this (chat_id: C, message_ids: M))
+        }
+    };
     (@method send_sticker $body:ident $ty:ident) => {
         type SendSticker = $ty![SendSticker];
 

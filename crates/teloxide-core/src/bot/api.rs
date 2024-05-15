@@ -1035,6 +1035,16 @@ impl Requester for Bot {
         Self::DeleteMessage::new(self.clone(), payloads::DeleteMessage::new(chat_id, message_id))
     }
 
+    type DeleteMessages = JsonRequest<payloads::DeleteMessages>;
+
+    fn delete_messages<C, M>(&self, chat_id: C, message_ids: M) -> Self::DeleteMessages
+    where
+        C: Into<Recipient>,
+        M: IntoIterator<Item = MessageId>,
+    {
+        Self::DeleteMessages::new(self.clone(), payloads::DeleteMessages::new(chat_id, message_ids))
+    }
+
     type SendSticker = MultipartRequest<payloads::SendSticker>;
 
     fn send_sticker<C>(&self, chat_id: C, sticker: InputFile) -> Self::SendSticker

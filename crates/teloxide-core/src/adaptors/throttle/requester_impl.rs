@@ -159,6 +159,7 @@ where
         edit_message_reply_markup_inline,
         stop_poll,
         delete_message,
+        delete_messages,
         get_sticker_set,
         get_custom_emoji_stickers,
         upload_sticker_file,
