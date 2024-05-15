@@ -163,6 +163,9 @@ macro_rules! fwd_erased {
     (@convert $m:ident, $arg:ident, custom_emoji_ids : $T:ty) => {
         $arg.into_iter().collect()
     };
+    (@convert $m:ident, $arg:ident, message_ids : $T:ty) => {
+        $arg.into_iter().collect()
+    };
     (@convert $m:ident, $arg:ident, $arg_:ident : $T:ty) => {
         $arg.into()
     };
