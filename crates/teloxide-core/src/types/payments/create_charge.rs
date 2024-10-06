@@ -2,10 +2,10 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::types::{Credentials, Currency, OwnerInfo};
+use crate::types::{Credentials, OwnerInfo};
 
 /// This object represents a payments.create_charge handled webhook.
-#[serde_with_macros::skip_serializing_none]
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct CreateCharge {
     /// Customer id.
@@ -38,7 +38,7 @@ pub struct CreateCharge {
     pub data: Option<serde_json::Value>,
 
     /// Currency.
-    pub currency: Currency,
+    pub currency: String,
 
     /// Invoice amount in minimum currency item.
     pub total_amount: i64,

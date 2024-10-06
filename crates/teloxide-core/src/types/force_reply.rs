@@ -12,7 +12,7 @@ use crate::types::True;
 /// [The official docs](https://core.telegram.org/bots/api#forcereply).
 ///
 /// [privacy mode]: https://core.telegram.org/bots#privacy-mode
-#[serde_with_macros::skip_serializing_none]
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Default, Debug, Eq, Hash, PartialEq, Serialize, Deserialize)]
 pub struct ForceReply {
     /// Shows reply interface to the user, as if they manually selected the
@@ -29,7 +29,7 @@ pub struct ForceReply {
     /// (has reply_to_message_id), sender of the original message.
     ///
     /// [`Message`]: crate::types::Message
-    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     pub selective: bool,
 }
 
@@ -52,5 +52,22 @@ impl ForceReply {
     #[must_use]
     pub fn selective(self) -> Self {
         Self { selective: true, ..self }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn deserialize() {
+        let data = r#"
+        {
+            "force_reply": true,
+            "input_field_placeholder": "placeholder",
+            "selective": false
+        }
+        "#;
+        serde_json::from_str::<ForceReply>(data).unwrap();
     }
 }

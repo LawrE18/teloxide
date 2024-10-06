@@ -5,7 +5,7 @@ use crate::types::{CreateCharge, PaymentsForm};
 use super::DeleteSavedCredentials;
 
 /// This object represents a custom query.
-#[serde_with_macros::skip_serializing_none]
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct CustomQuery {
     /// Unique custom query identifier.

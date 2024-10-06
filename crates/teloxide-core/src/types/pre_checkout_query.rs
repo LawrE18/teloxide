@@ -1,11 +1,11 @@
 use serde::{Deserialize, Serialize};
 
-use crate::types::{Currency, OrderInfo, User};
+use crate::types::{OrderInfo, User};
 
 /// This object contains information about an incoming pre-checkout query.
 ///
 /// [The official docs](https://core.telegram.org/bots/api#precheckoutquery).
-#[serde_with_macros::skip_serializing_none]
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Eq, Hash, PartialEq, Serialize, Deserialize)]
 pub struct PreCheckoutQuery {
     /// Unique query identifier.
@@ -14,10 +14,12 @@ pub struct PreCheckoutQuery {
     /// User who sent the query.
     pub from: User,
 
-    /// Three-letter ISO 4217 [currency] code.
+    /// Three-letter ISO 4217 currency code, see [more on currencies]. Pass
+    /// `XTR` for payments in [Telegram Stars].
     ///
-    /// [currency]: https://core.telegram.org/bots/payments#supported-currencies
-    pub currency: Currency,
+    /// [more on currencies]: https://core.telegram.org/bots/payments#supported-currencies
+    /// [Telegram Stars]: https://t.me/BotNews/90
+    pub currency: String,
 
     /// Total price in the _smallest units_ of the currency (integer, **not**
     /// float/double). For example, for a price of `US$ 1.45` pass `amount =

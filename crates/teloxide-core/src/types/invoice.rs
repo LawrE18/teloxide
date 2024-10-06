@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 /// This object contains basic information about an invoice.
 ///
 /// [The official docs](https://core.telegram.org/bots/api#invoice).
-#[serde_with_macros::skip_serializing_none]
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, Eq, Hash, PartialEq, Serialize, Deserialize)]
 pub struct Invoice {
     /// Product name.
@@ -16,7 +16,11 @@ pub struct Invoice {
     /// invoice.
     pub start_parameter: String,
 
-    /// Three-letter ISO 4217 currency code.
+    /// Three-letter ISO 4217 currency code, see [more on currencies]. Pass
+    /// `XTR` for payments in [Telegram Stars].
+    ///
+    /// [more on currencies]: https://core.telegram.org/bots/payments#supported-currencies
+    /// [Telegram Stars]: https://t.me/BotNews/90
     pub currency: String,
 
     /// Total price in the smallest units of the currency (integer, **not**

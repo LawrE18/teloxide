@@ -4,6 +4,7 @@ use futures::{future::BoxFuture, FutureExt};
 use reqwest::Url;
 
 use crate::{
+    errors::AsResponseParameters,
     payloads::*,
     requests::{HasPayload, Output, Payload, Request, Requester},
     types::*,
@@ -163,6 +164,15 @@ macro_rules! fwd_erased {
     (@convert $m:ident, $arg:ident, custom_emoji_ids : $T:ty) => {
         $arg.into_iter().collect()
     };
+    (@convert $m:ident, $arg:ident, stickers: $T:ty) => {
+        $arg.into_iter().collect()
+    };
+    (@convert $m:ident, $arg:ident, emoji_list: $T:ty) => {
+        $arg.into_iter().collect()
+    };
+    (@convert $m:ident, $arg:ident, message_ids: $T:ty) => {
+        $arg.into_iter().collect()
+    };
     (@convert $m:ident, $arg:ident, $arg_:ident : $T:ty) => {
         $arg.into()
     };
@@ -170,7 +180,7 @@ macro_rules! fwd_erased {
 
 impl<'a, Err> Requester for ErasedRequester<'a, Err>
 where
-    Err: std::error::Error + Send,
+    Err: std::error::Error + Send + AsResponseParameters,
 {
     type Err = Err;
 
@@ -183,7 +193,9 @@ where
         delete_webhook,
         get_webhook_info,
         forward_message,
+        forward_messages,
         copy_message,
+        copy_messages,
         send_message,
         send_photo,
         send_audio,
@@ -203,6 +215,7 @@ where
         send_poll,
         send_dice,
         send_chat_action,
+        set_message_reaction,
         get_user_profile_photos,
         get_file,
         kick_chat_member,
@@ -245,9 +258,18 @@ where
         reopen_general_forum_topic,
         hide_general_forum_topic,
         unhide_general_forum_topic,
+        unpin_all_general_forum_topic_messages,
         answer_callback_query,
+        get_user_chat_boosts,
         set_my_commands,
+        get_business_connection,
         get_my_commands,
+        set_my_name,
+        get_my_name,
+        set_my_description,
+        get_my_description,
+        set_my_short_description,
+        get_my_short_description,
         set_chat_menu_button,
         get_chat_menu_button,
         set_my_default_administrator_rights,
@@ -274,7 +296,14 @@ where
         add_sticker_to_set,
         set_sticker_position_in_set,
         delete_sticker_from_set,
-        set_sticker_set_thumb,
+        replace_sticker_in_set,
+        set_sticker_set_thumbnail,
+        set_custom_emoji_sticker_set_thumbnail,
+        set_sticker_set_title,
+        delete_sticker_set,
+        set_sticker_emoji_list,
+        set_sticker_keywords,
+        set_sticker_mask_position,
         send_invoice,
         create_invoice_link,
         answer_shipping_query,
@@ -322,12 +351,26 @@ trait ErasableRequester<'a> {
         message_id: MessageId,
     ) -> ErasedRequest<'a, ForwardMessage, Self::Err>;
 
+    fn forward_messages(
+        &self,
+        chat_id: Recipient,
+        from_chat_id: Recipient,
+        message_ids: Vec<MessageId>,
+    ) -> ErasedRequest<'a, ForwardMessages, Self::Err>;
+
     fn copy_message(
         &self,
         chat_id: Recipient,
         from_chat_id: Recipient,
         message_id: MessageId,
     ) -> ErasedRequest<'a, CopyMessage, Self::Err>;
+
+    fn copy_messages(
+        &self,
+        chat_id: Recipient,
+        from_chat_id: Recipient,
+        message_ids: Vec<MessageId>,
+    ) -> ErasedRequest<'a, CopyMessages, Self::Err>;
 
     fn send_photo(
         &self,
@@ -440,6 +483,12 @@ trait ErasableRequester<'a> {
         chat_id: Recipient,
         action: ChatAction,
     ) -> ErasedRequest<'a, SendChatAction, Self::Err>;
+
+    fn set_message_reaction(
+        &self,
+        chat_id: Recipient,
+        message_id: MessageId,
+    ) -> ErasedRequest<'a, SetMessageReaction, Self::Err>;
 
     fn get_user_profile_photos(
         &self,
@@ -622,7 +671,7 @@ trait ErasableRequester<'a> {
         &self,
         chat_id: Recipient,
         name: String,
-        icon_color: u32,
+        icon_color: Rgb,
         icon_custom_emoji_id: String,
     ) -> ErasedRequest<'a, CreateForumTopic, Self::Err>;
 
@@ -682,17 +731,45 @@ trait ErasableRequester<'a> {
         chat_id: Recipient,
     ) -> ErasedRequest<'a, UnhideGeneralForumTopic, Self::Err>;
 
+    fn unpin_all_general_forum_topic_messages(
+        &self,
+        chat_id: Recipient,
+    ) -> ErasedRequest<'a, UnpinAllGeneralForumTopicMessages, Self::Err>;
+
     fn answer_callback_query(
         &self,
         callback_query_id: String,
     ) -> ErasedRequest<'a, AnswerCallbackQuery, Self::Err>;
+
+    fn get_user_chat_boosts(
+        &self,
+        chat_id: Recipient,
+        user_id: UserId,
+    ) -> ErasedRequest<'a, GetUserChatBoosts, Self::Err>;
 
     fn set_my_commands(
         &self,
         commands: Vec<BotCommand>,
     ) -> ErasedRequest<'a, SetMyCommands, Self::Err>;
 
+    fn get_business_connection(
+        &self,
+        business_connection_id: BusinessConnectionId,
+    ) -> ErasedRequest<'a, GetBusinessConnection, Self::Err>;
+
     fn get_my_commands(&self) -> ErasedRequest<'a, GetMyCommands, Self::Err>;
+
+    fn set_my_name(&self) -> ErasedRequest<'a, SetMyName, Self::Err>;
+
+    fn get_my_name(&self) -> ErasedRequest<'a, GetMyName, Self::Err>;
+
+    fn set_my_description(&self) -> ErasedRequest<'a, SetMyDescription, Self::Err>;
+
+    fn get_my_description(&self) -> ErasedRequest<'a, GetMyDescription, Self::Err>;
+
+    fn set_my_short_description(&self) -> ErasedRequest<'a, SetMyShortDescription, Self::Err>;
+
+    fn get_my_short_description(&self) -> ErasedRequest<'a, GetMyShortDescription, Self::Err>;
 
     fn set_chat_menu_button(&self) -> ErasedRequest<'a, SetChatMenuButton, Self::Err>;
 
@@ -783,7 +860,7 @@ trait ErasableRequester<'a> {
     fn delete_messages(
         &self,
         chat_id: Recipient,
-        message_ids: MessageIds,
+        message_ids: Vec<MessageId>,
     ) -> ErasedRequest<'a, DeleteMessages, Self::Err>;
 
     fn send_sticker(
@@ -802,7 +879,8 @@ trait ErasableRequester<'a> {
     fn upload_sticker_file(
         &self,
         user_id: UserId,
-        png_sticker: InputFile,
+        sticker: InputFile,
+        sticker_format: StickerFormat,
     ) -> ErasedRequest<'a, UploadStickerFile, Self::Err>;
 
     fn create_new_sticker_set(
@@ -810,8 +888,7 @@ trait ErasableRequester<'a> {
         user_id: UserId,
         name: String,
         title: String,
-        sticker: InputSticker,
-        emojis: String,
+        stickers: Vec<InputSticker>,
     ) -> ErasedRequest<'a, CreateNewStickerSet, Self::Err>;
 
     fn add_sticker_to_set(
@@ -819,7 +896,6 @@ trait ErasableRequester<'a> {
         user_id: UserId,
         name: String,
         sticker: InputSticker,
-        emojis: String,
     ) -> ErasedRequest<'a, AddStickerToSet, Self::Err>;
 
     fn set_sticker_position_in_set(
@@ -833,11 +909,49 @@ trait ErasableRequester<'a> {
         sticker: String,
     ) -> ErasedRequest<'a, DeleteStickerFromSet, Self::Err>;
 
-    fn set_sticker_set_thumb(
+    fn replace_sticker_in_set(
+        &self,
+        user_id: UserId,
+        name: String,
+        old_sticker: String,
+        sticker: InputSticker,
+    ) -> ErasedRequest<'a, ReplaceStickerInSet, Self::Err>;
+
+    fn set_sticker_set_thumbnail(
         &self,
         name: String,
         user_id: UserId,
-    ) -> ErasedRequest<'a, SetStickerSetThumb, Self::Err>;
+        format: StickerFormat,
+    ) -> ErasedRequest<'a, SetStickerSetThumbnail, Self::Err>;
+
+    fn set_custom_emoji_sticker_set_thumbnail(
+        &self,
+        name: String,
+    ) -> ErasedRequest<'a, SetCustomEmojiStickerSetThumbnail, Self::Err>;
+
+    fn set_sticker_set_title(
+        &self,
+        name: String,
+        title: String,
+    ) -> ErasedRequest<'a, SetStickerSetTitle, Self::Err>;
+
+    fn delete_sticker_set(&self, name: String) -> ErasedRequest<'a, DeleteStickerSet, Self::Err>;
+
+    fn set_sticker_emoji_list(
+        &self,
+        sticker: String,
+        emoji_list: Vec<String>,
+    ) -> ErasedRequest<'a, SetStickerEmojiList, Self::Err>;
+
+    fn set_sticker_keywords(
+        &self,
+        sticker: String,
+    ) -> ErasedRequest<'a, SetStickerKeywords, Self::Err>;
+
+    fn set_sticker_mask_position(
+        &self,
+        sticker: String,
+    ) -> ErasedRequest<'a, SetStickerMaskPosition, Self::Err>;
 
     // we can't change telegram API
     #[allow(clippy::too_many_arguments)]
@@ -883,7 +997,7 @@ trait ErasableRequester<'a> {
 
     fn send_game(
         &self,
-        chat_id: u32,
+        chat_id: ChatId,
         game_short_name: String,
     ) -> ErasedRequest<'a, SendGame, Self::Err>;
 
@@ -960,6 +1074,15 @@ where
         Requester::forward_message(self, chat_id, from_chat_id, message_id).erase()
     }
 
+    fn forward_messages(
+        &self,
+        chat_id: Recipient,
+        from_chat_id: Recipient,
+        message_ids: Vec<MessageId>,
+    ) -> ErasedRequest<'a, ForwardMessages, Self::Err> {
+        Requester::forward_messages(self, chat_id, from_chat_id, message_ids).erase()
+    }
+
     fn copy_message(
         &self,
         chat_id: Recipient,
@@ -967,6 +1090,15 @@ where
         message_id: MessageId,
     ) -> ErasedRequest<'a, CopyMessage, Self::Err> {
         Requester::copy_message(self, chat_id, from_chat_id, message_id).erase()
+    }
+
+    fn copy_messages(
+        &self,
+        chat_id: Recipient,
+        from_chat_id: Recipient,
+        message_ids: Vec<MessageId>,
+    ) -> ErasedRequest<'a, CopyMessages, Self::Err> {
+        Requester::copy_messages(self, chat_id, from_chat_id, message_ids).erase()
     }
 
     fn send_photo(
@@ -1117,6 +1249,14 @@ where
         action: ChatAction,
     ) -> ErasedRequest<'a, SendChatAction, Self::Err> {
         Requester::send_chat_action(self, chat_id, action).erase()
+    }
+
+    fn set_message_reaction(
+        &self,
+        chat_id: Recipient,
+        message_id: MessageId,
+    ) -> ErasedRequest<'a, SetMessageReaction, Self::Err> {
+        Requester::set_message_reaction(self, chat_id, message_id).erase()
     }
 
     fn get_user_profile_photos(
@@ -1366,7 +1506,7 @@ where
         &self,
         chat_id: Recipient,
         name: String,
-        icon_color: u32,
+        icon_color: Rgb,
         icon_custom_emoji_id: String,
     ) -> ErasedRequest<'a, CreateForumTopic, Self::Err> {
         Requester::create_forum_topic(self, chat_id, name, icon_color, icon_custom_emoji_id).erase()
@@ -1448,11 +1588,26 @@ where
         Requester::unhide_general_forum_topic(self, chat_id).erase()
     }
 
+    fn unpin_all_general_forum_topic_messages(
+        &self,
+        chat_id: Recipient,
+    ) -> ErasedRequest<'a, UnpinAllGeneralForumTopicMessages, Self::Err> {
+        Requester::unpin_all_general_forum_topic_messages(self, chat_id).erase()
+    }
+
     fn answer_callback_query(
         &self,
         callback_query_id: String,
     ) -> ErasedRequest<'a, AnswerCallbackQuery, Self::Err> {
         Requester::answer_callback_query(self, callback_query_id).erase()
+    }
+
+    fn get_user_chat_boosts(
+        &self,
+        chat_id: Recipient,
+        user_id: UserId,
+    ) -> ErasedRequest<'a, GetUserChatBoosts, Self::Err> {
+        Requester::get_user_chat_boosts(self, chat_id, user_id).erase()
     }
 
     fn set_my_commands(
@@ -1462,8 +1617,39 @@ where
         Requester::set_my_commands(self, commands).erase()
     }
 
+    fn get_business_connection(
+        &self,
+        business_connection_id: BusinessConnectionId,
+    ) -> ErasedRequest<'a, GetBusinessConnection, Self::Err> {
+        Requester::get_business_connection(self, business_connection_id).erase()
+    }
+
     fn get_my_commands(&self) -> ErasedRequest<'a, GetMyCommands, Self::Err> {
         Requester::get_my_commands(self).erase()
+    }
+
+    fn set_my_name(&self) -> ErasedRequest<'a, SetMyName, Self::Err> {
+        Requester::set_my_name(self).erase()
+    }
+
+    fn get_my_name(&self) -> ErasedRequest<'a, GetMyName, Self::Err> {
+        Requester::get_my_name(self).erase()
+    }
+
+    fn set_my_description(&self) -> ErasedRequest<'a, SetMyDescription, Self::Err> {
+        Requester::set_my_description(self).erase()
+    }
+
+    fn get_my_description(&self) -> ErasedRequest<'a, GetMyDescription, Self::Err> {
+        Requester::get_my_description(self).erase()
+    }
+
+    fn set_my_short_description(&self) -> ErasedRequest<'a, SetMyShortDescription, Self::Err> {
+        Requester::set_my_short_description(self).erase()
+    }
+
+    fn get_my_short_description(&self) -> ErasedRequest<'a, GetMyShortDescription, Self::Err> {
+        Requester::get_my_short_description(self).erase()
     }
 
     fn set_chat_menu_button(&self) -> ErasedRequest<'a, SetChatMenuButton, Self::Err> {
@@ -1589,7 +1775,7 @@ where
     fn delete_messages(
         &self,
         chat_id: Recipient,
-        message_ids: MessageIds,
+        message_ids: Vec<MessageId>,
     ) -> ErasedRequest<'a, DeleteMessages, Self::Err> {
         Requester::delete_messages(self, chat_id, message_ids).erase()
     }
@@ -1616,9 +1802,10 @@ where
     fn upload_sticker_file(
         &self,
         user_id: UserId,
-        png_sticker: InputFile,
+        sticker: InputFile,
+        sticker_format: StickerFormat,
     ) -> ErasedRequest<'a, UploadStickerFile, Self::Err> {
-        Requester::upload_sticker_file(self, user_id, png_sticker).erase()
+        Requester::upload_sticker_file(self, user_id, sticker, sticker_format).erase()
     }
 
     fn create_new_sticker_set(
@@ -1626,10 +1813,9 @@ where
         user_id: UserId,
         name: String,
         title: String,
-        sticker: InputSticker,
-        emojis: String,
+        stickers: Vec<InputSticker>,
     ) -> ErasedRequest<'a, CreateNewStickerSet, Self::Err> {
-        Requester::create_new_sticker_set(self, user_id, name, title, sticker, emojis).erase()
+        Requester::create_new_sticker_set(self, user_id, name, title, stickers).erase()
     }
 
     fn add_sticker_to_set(
@@ -1637,9 +1823,8 @@ where
         user_id: UserId,
         name: String,
         sticker: InputSticker,
-        emojis: String,
     ) -> ErasedRequest<'a, AddStickerToSet, Self::Err> {
-        Requester::add_sticker_to_set(self, user_id, name, sticker, emojis).erase()
+        Requester::add_sticker_to_set(self, user_id, name, sticker).erase()
     }
 
     fn set_sticker_position_in_set(
@@ -1657,12 +1842,64 @@ where
         Requester::delete_sticker_from_set(self, sticker).erase()
     }
 
-    fn set_sticker_set_thumb(
+    fn replace_sticker_in_set(
+        &self,
+        user_id: UserId,
+        name: String,
+        old_sticker: String,
+        sticker: InputSticker,
+    ) -> ErasedRequest<'a, ReplaceStickerInSet, Self::Err> {
+        Requester::replace_sticker_in_set(self, user_id, name, old_sticker, sticker).erase()
+    }
+
+    fn set_sticker_set_thumbnail(
         &self,
         name: String,
         user_id: UserId,
-    ) -> ErasedRequest<'a, SetStickerSetThumb, Self::Err> {
-        Requester::set_sticker_set_thumb(self, name, user_id).erase()
+        format: StickerFormat,
+    ) -> ErasedRequest<'a, SetStickerSetThumbnail, Self::Err> {
+        Requester::set_sticker_set_thumbnail(self, name, user_id, format).erase()
+    }
+
+    fn set_custom_emoji_sticker_set_thumbnail(
+        &self,
+        name: String,
+    ) -> ErasedRequest<'a, SetCustomEmojiStickerSetThumbnail, Self::Err> {
+        Requester::set_custom_emoji_sticker_set_thumbnail(self, name).erase()
+    }
+
+    fn set_sticker_set_title(
+        &self,
+        name: String,
+        title: String,
+    ) -> ErasedRequest<'a, SetStickerSetTitle, Self::Err> {
+        Requester::set_sticker_set_title(self, name, title).erase()
+    }
+
+    fn delete_sticker_set(&self, name: String) -> ErasedRequest<'a, DeleteStickerSet, Self::Err> {
+        Requester::delete_sticker_set(self, name).erase()
+    }
+
+    fn set_sticker_emoji_list(
+        &self,
+        sticker: String,
+        emoji_list: Vec<String>,
+    ) -> ErasedRequest<'a, SetStickerEmojiList, Self::Err> {
+        Requester::set_sticker_emoji_list(self, sticker, emoji_list).erase()
+    }
+
+    fn set_sticker_keywords(
+        &self,
+        sticker: String,
+    ) -> ErasedRequest<'a, SetStickerKeywords, Self::Err> {
+        Requester::set_sticker_keywords(self, sticker).erase()
+    }
+
+    fn set_sticker_mask_position(
+        &self,
+        sticker: String,
+    ) -> ErasedRequest<'a, SetStickerMaskPosition, Self::Err> {
+        Requester::set_sticker_mask_position(self, sticker).erase()
     }
 
     fn send_invoice(
@@ -1736,7 +1973,7 @@ where
 
     fn send_game(
         &self,
-        chat_id: u32,
+        chat_id: ChatId,
         game_short_name: String,
     ) -> ErasedRequest<'a, SendGame, Self::Err> {
         Requester::send_game(self, chat_id, game_short_name).erase()

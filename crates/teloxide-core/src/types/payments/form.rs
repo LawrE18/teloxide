@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 use crate::types::OwnerInfo;
 
 /// This object represents a payments.form handled webhook.
-#[serde_with_macros::skip_serializing_none]
+#[serde_with::skip_serializing_none]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct PaymentsForm {
     /// Customer id.

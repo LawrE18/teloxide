@@ -25,6 +25,12 @@ impl_payload! {
             pub can_edit_messages: bool,
             /// Pass True, if the administrator can delete messages of other users
             pub can_delete_messages: bool,
+            /// Pass True, if the administrator can post stories to the chat
+            pub can_post_stories: bool,
+            /// Pass True, if the administrator can edit stories posted by other users
+            pub can_edit_stories: bool,
+            /// Pass True, if the administrator can delete stories posted by other users
+            pub can_delete_stories: bool,
             /// Pass True, if the administrator can manage video chats, supergroups only
             pub can_manage_video_chats: bool,
             /// Pass True, if the administrator can restrict, ban or unban chat members
